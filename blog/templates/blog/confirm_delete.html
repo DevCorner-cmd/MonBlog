@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Supprimer un Article{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-base-200 py-10">
+
+  <div class="card w-full max-w-md bg-base-100 shadow-xl border border-error">
+    
+    <div class="card-body text-center">
+      
+      <h1 class="card-title text-2xl font-bold text-error mb-4">
+        ⚠️ Supprimer l'article : "{{ article.titre }}"
+      </h1>
+
+      {% if article.image %}
+      <figure class="mb-4">
+        <img src="{{ article.image.url }}" alt="{{ article.titre }}" class="w-full h-48 object-cover rounded-lg" />
+      </figure>
+      {% endif %}
+
+      <p class="mb-6 text-base-content">
+        Êtes-vous sûr de vouloir supprimer cet article ? Cette action est <strong>irréversible</strong>.
+      </p>
+
+      <form method="POST" class="flex flex-col md:flex-row justify-center gap-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-error flex-1">
+          🗑 Supprimer
+        </button>
+        <a href="{% url 'blog:dashboard' %}" class="btn btn-outline flex-1">
+          🏠 Annuler
+        </a>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

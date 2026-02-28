@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+
+
+
+
+{% block content %}
+<!-- Couverture -->
+<div class="hero min-h-[70vh] relative">
+
+    <img 
+        src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80" 
+        class="absolute inset-0 w-full h-full object-cover"
+        alt="Couverture informatique"
+    />
+
+    <div class="hero-overlay bg-black/60"></div>
+
+    <div class="hero-content text-center text-neutral-content relative">
+        <div class="max-w-xl">
+            <div class="mb-8">
+                {% if user.is_authenticated %}
+                <span class="mr-4 font-bold text-4xl">
+                    BIENVENUE 
+                    <strong class="text-secondary p-2">
+                        {{ user.username.upper }}
+                    </strong>
+                </span>
+            {% endif %}
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-bold">
+                💻 Inspirez-vous, codez, innovez !
+            </h1>
+            <p class="mb-5 text-lg md:text-xl">
+                Un espace dédié aux passionnés du numérique, 
+                où chaque ligne de code construit l’avenir.
+            </p>
+            <a href="{% url 'blog:home' %}" class="btn btn-primary btn-lg">
+                Découvrir les articles
+            </a>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="">
+{% for article in articles %}
+<!--Nouveau design-->
+<div class="hero min-h-screen bg-base-200 flex flex-col">
+  <div class="hero-content flex-col lg:flex-row">
+    <img src="{{ article.image.url }}" class="max-w-sm rounded-lg shadow-2xl" />
+    <div>
+        <h1 class="text-5xl font-bold">{{ article.titre }}</h1>
+        <h2 class="py-6 mb-5 font-bold">{{ article.resume_desc }}</h2>
+        <div class="flex justify-center badge badge-soft badge-info mb-4">
+            <div class="inline-grid *:[grid-area:1/1]">
+                <div class="status status-error animate-ping"></div>
+                <div class="status status-error"></div>
+            </div> 
+            <p class="">
+            Créé le {{ article.date_creation|date:"d/m/Y" }}
+            {% if article.is_updated %} | Mis à jour le {{ article.date_modif|date:"d/m/Y" }} 
+            {% endif %} | Par {{ article.auteur }}
+        </p>
+        </div>
+        <div class="flex justify-center">
+            <a href="{{ article.get_absolute_url }}" class="btn btn-primary m-5">Voir</a>
+
+            {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'blog:edit' article.id %}" class="btn btn-primary m-5">✏️ Modifier</a>
+            {% endif %}
+        </div>
+        <!--Commentaire-->
+    </div>
+  </div>
+          <!-- SECTION COMMENTAIRES -->
+    <div class="mt-10 w-full max-w-2xl mb-10">
+
+        <h3 class="text-2xl font-bold mb-4 text-center">💬 COMMENTAIRES </h3>
+
+        {% for comment in article.commentaires.all %}
+        
+            {% if not comment.parent %}
+            <!-- Commentaire principal -->
+            <div class="chat chat-start mb-4">
+                <div class="chat-bubble chat-bubble-neutral">
+                    <p class="font-semibold text-sm mb-1">
+                        {{ comment.auteur.username }}
+                    </p>
+                    <p>{{ comment.contenu }}</p>
+                    <p class="text-xs opacity-70 mt-1">
+                        {{ comment.date_creation|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+
+                <!-- Réponses admin -->
+                {% for reply in comment.reponses.all %}
+                <div class="chat chat-end mb-4">
+                    <div class="chat-bubble chat-bubble-primary">
+                        <p class="font-semibold text-sm mb-1">
+                            {{ reply.auteur.username }} (Admin)
+                        </p>
+                        <p>{{ reply.contenu }}</p>
+                        <p class="text-xs opacity-70 mt-1">
+                            {{ reply.date_creation|date:"d/m/Y H:i" }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Formulaire réponse admin -->
+                {% if user.is_superuser %}
+                <form method="POST" action="{% url 'blog:repondre_commentaire' comment.id %}" class="mb-6">
+                    {% csrf_token %}
+                    <textarea name="contenu"
+                            class="textarea textarea-bordered w-full"
+                            placeholder="Répondre..."
+                            required></textarea>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">
+                        Répondre
+                    </button>
+                </form>
+                {% endif %}
+
+            {% endif %}
+        {% empty %}
+            <p class="text-center text-gray-500">Aucun commentaire pour l’instant.</p>
+        {% endfor %}
+
+        <!-- Formulaire commentaire utilisateur -->
+        {% if user.is_authenticated and not user.is_superuser %}
+        <form method="POST" class="mt-6">
+            {% csrf_token %}
+            <input type="hidden" name="article_id" value="{{ article.id }}">
+            <textarea name="contenu"
+                    class="textarea textarea-bordered w-full"
+                    placeholder="Écrire un commentaire..."
+                    required></textarea>
+            <button type="submit" class="btn btn-primary mt-2">
+                Envoyer
+            </button>
+        </form>
+        {% elif not user.is_authenticated %}
+            <p class="text-center text-gray-500 mt-4">
+                Connectez-vous pour commenter un article.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+<hr class="m">
+{% empty %}
+    <div class="h-200 flex justify-center items-center">
+        <p class="text-5xl text-primary font-bold">Aucun article disponible.</p>
+    </div>
+{% endfor %}
+
+</div>
+
+
+
+
+{% endblock %}
+

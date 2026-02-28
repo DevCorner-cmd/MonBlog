@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen flex justify-center py-10 bg-base-200">
+
+  <div class="card w-full max-w-3xl bg-base-100 shadow-xl">
+
+    <!-- Image -->
+    <figure class="relative">
+      <img 
+        src="{% if article.image %}{{ article.image.url }}{% else %}https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s{% endif %}" 
+        alt="{{ article.titre }}" 
+        class="w-full h-auto max-h-96 object-contain rounded-t-xl"
+      >
+    </figure>
+
+    <!-- Contenu -->
+    <div class="card-body">
+      <h1 class="card-title text-3xl md:text-4xl font-bold mb-4">
+        {{ article.titre }}
+      </h1>
+
+      <p class="text-base md:text-lg text-base-content mb-6">
+        {{ article.description }}
+      </p>
+
+      <!-- Bouton retour -->
+      <div class="flex justify-start">
+        <a href="{% url 'blog:home' %}" class="btn btn-outline btn-primary">
+          ← Retour à l'accueil
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

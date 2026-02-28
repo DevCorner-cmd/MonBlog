@@ -1,0 +1,105 @@
+
+
+/* ===== Actions ===== */
+.dashboard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* ===== Boutons ===== */
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s ease;
+    text-align: center;
+}
+
+.btn-add { background: #4CAF50; }
+.btn-home { background: #2196F3; }
+.btn-edit { background: #FF9800; }
+.btn-delete { background: #F44336; }
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* ===== Tableau Desktop ===== */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.dashboard-table tr:hover {
+    background: #f9f9f9;
+}
+
+/* ================================================= */
+/* =============== RESPONSIVE MOBILE =============== */
+/* ================================================= */
+
+@media (max-width: 768px) {
+
+    .dashboard-container {
+        padding: 15px;
+    }
+
+    /* Boutons en colonne */
+    .dashboard-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    /* Transformer tableau en cartes */
+    .dashboard-table {
+        border: 0;
+        min-width: 100%;
+    }
+
+    .dashboard-table thead {
+        display: none;
+    }
+
+    .dashboard-table tr {
+        display: block;
+        margin-bottom: 15px;
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .dashboard-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border: none;
+        font-size: 0.9rem;
+    }
+
+    .dashboard-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #555;
+    }
+}

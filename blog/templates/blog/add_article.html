@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajouter un Article{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-base-200 py-10">
+
+  <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
+    
+    <div class="card-body">
+      
+      <h1 class="card-title text-3xl font-bold justify-center mb-6">
+        📝 Ajouter un nouvel article
+      </h1>
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-5">
+        {% csrf_token %}
+
+        <!-- Titre -->
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-semibold">Titre</span>
+          </label>
+          {{ form.titre }}
+        </div>
+
+        <!-- Résumé -->
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-semibold">Résumé</span>
+          </label>
+          {{ form.resume_desc }}
+        </div>
+
+        <!-- Description -->
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-semibold">Description</span>
+          </label>
+          {{ form.description }}
+        </div>
+
+        <!-- Image -->
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-semibold">Image</span>
+          </label>
+          {{ form.image }}
+        </div>
+
+        <!-- Publier -->
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-4">
+            <span class="label-text font-semibold">Publier immédiatement</span>
+            {{ form.publie }}
+          </label>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex flex-col md:flex-row gap-4 mt-6">
+          <button type="submit" class="btn btn-primary flex-1">
+            ➕ Ajouter
+          </button>
+          <a href="{% url 'blog:dashboard' %}" class="btn btn-outline flex-1">
+            🏠 Retour au dashboard
+          </a>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
