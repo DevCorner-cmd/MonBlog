@@ -17,7 +17,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://angyblog.onrender.com']
+ALLOWED_HOSTS = ['angyblog.onrender.com']
 
 
 # Application definition
