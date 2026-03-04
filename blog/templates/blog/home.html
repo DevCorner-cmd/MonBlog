@@ -52,9 +52,11 @@
 <div class="hero min-h-screen bg-base-200 flex flex-col">
   <div class="hero-content flex-col lg:flex-row">
     {% if article.image %}
-    <img src="{{ article.image.url }}" class="max-w-sm rounded-lg shadow-2xl" />
-    {% else %}
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s" class="max-w-sm rounded-lg shadow-2xl" />
+    <figure class="aspect-video w-full lg:w-1/2">
+        <img src="{{ article.image.url }}" class="w-full h-full object-cover transition-transform duration-300 rounded-lg shadow-2xl hover:scale-105" />
+        {% else %}
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s" class="max-w-sm rounded-lg shadow-2xl" />
+    </figure>
     {% endif %} 
     <div class="w-full">
         <h1 class="text-5xl font-bold mr-10 text-green-500">{{ article.titre }}</h1>
