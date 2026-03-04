@@ -7,6 +7,7 @@ import dj_database_url
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import cloudinary_storage
 
 
 CLOUDINARY_URL = config('CLOUDINARY_URL')
