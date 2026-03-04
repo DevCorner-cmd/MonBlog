@@ -72,10 +72,10 @@ WSGI_APPLICATION = 'AngyBlog.wsgi.application'
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 } """
-""" # Utilisation de postegresql
+# Utilisation de postegresql
 DATABASES = {
     'default': dj_database_url.parse(config('DATABASE_URL'))
-} """
+}
 
 
 
