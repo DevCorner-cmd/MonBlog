@@ -5,17 +5,56 @@
   <div class="card w-96 bg-base-100 shadow-xl p-6">
     <h2 class="text-2xl font-bold text-center mb-4">Connexion</h2>
 
-    <form method="post" class="space-y-4">
+    <form method="post" class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
       {% csrf_token %}
       <label for="id_username">Nom d'utilisateur</label>
-      <input type="text" name="username" class="input input-bordered w-full" placeholder="Nom d’utilisateur">
+       <label class="input validator" for="id_username">
+         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </g>
+        </svg>
+        <input type="text" name="username" placeholder="Nom d'utilisateur ou email" required id="id_username"/>
+      </label>
+      <p class="validator-hint hidden">Required</p>
+
 
       <label for="id_password">Mot de passe</label>
-      <input type="password" name="password" class="input input-bordered w-full" placeholder="Mot de passe">
+      <label class="input validator" for="id_password">
+         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+              ></path>
+              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            </g>
+          </svg>
+        <input type="password" name="password" placeholder="Mot de passe" required id="id_password"/>
+      </label>
+      <p class="validator-hint hidden">Required</p>
+      <!--affichage si mdp incorrect -->
+      {% if form.errors %}
+        <div class="alert alert-error mt-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.736-3L13.736 5c-.768-1.333-2.672-1.333-3.44 0L3.34 16c-.766 1.333 .195 3 1.735 3z" /></svg>
+          <span>Identifiants incorrects</span>
+        </div>
+      {% endif %}
 
-      <button type="submit" class="btn btn-primary w-full mt-4">
-        Se connecter
-      </button>
+      <button class="btn btn-neutral mt-4" type="submit">Login</button>
+      <button class="btn btn-ghost mt-1" type="reset">Reset</button>
     </form>
 
     <p class="mt-4 text-center">

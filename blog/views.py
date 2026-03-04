@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Article, Commentaire, ArticleView
 from .forms import ArticleForm
-from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncDate
 
@@ -46,16 +45,27 @@ def get_client_ip(request):
     return request.META.get('REMOTE_ADDR')
 
 
-def detail_article(request, slug):
-    article = get_object_or_404(Article, slug=slug, publie=True)
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Prefetch
+from .models import Article, Commentaire, ArticleView
 
+def detail_article(request, slug):
+    article = get_object_or_404(
+        Article.objects.prefetch_related(
+            "commentaires__reponses",
+            "commentaires__auteur",
+            "commentaires__reponses__auteur"
+        ),
+        slug=slug,
+        publie=True
+    )
+
+    # ----------- COMPTEUR DE VUES -----------
     ip = get_client_ip(request)
     session_key = f"viewed_{article.id}"
 
-    # Ne pas compter l’auteur
     if request.user != article.auteur:
 
-        # Vérifie session + IP
         already_viewed_session = request.session.get(session_key)
         already_viewed_ip = ArticleView.objects.filter(
             article=article,
@@ -72,6 +82,28 @@ def detail_article(request, slug):
             article.save(update_fields=['views'])
 
             request.session[session_key] = True
+
+    # ----------- COMMENTAIRES / RÉPONSES -----------
+    if request.method == "POST" and request.user.is_authenticated:
+        contenu = request.POST.get("contenu")
+        parent_id = request.POST.get("parent_id")
+
+        if contenu:
+            parent = None
+            if parent_id:
+                try:
+                    parent = Commentaire.objects.get(id=parent_id)
+                except Commentaire.DoesNotExist:
+                    parent = None
+
+            Commentaire.objects.create(
+                article=article,
+                auteur=request.user,
+                contenu=contenu,
+                parent=parent
+            )
+
+            return redirect("blog:detail_article", slug=article.slug)
 
     date1 = article.date_creation.strftime("%d/%m/%Y")
     date2 = article.date_modif.strftime("%d/%m/%Y")

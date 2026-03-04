@@ -63,7 +63,13 @@ class Commentaire(models.Model):
     auteur = models.ForeignKey(User, on_delete=models.CASCADE)  # utilisateur connecté
     contenu = models.TextField()
     date_creation = models.DateTimeField(auto_now_add=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='reponses')  # réponses admin
+    parent = models.ForeignKey(
+    "self",
+    null=True,
+    blank=True,
+    related_name="reponses",
+    on_delete=models.CASCADE
+)  # réponses admin
 
     def __str__(self):
         return f"{self.auteur.username} sur {self.article.titre}"

@@ -9,17 +9,110 @@
       {% csrf_token %}
 
       {{ form.username.label_tag }}
+      <label class="input validator">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </g>
+        </svg>
       {{ form.username }}
+      </label>
+        {% if form.username.errors %}
+              {% for error in form.username.errors %}
+              <div class="validator-hint hidden">
+                      {{ error }}
+              </div>
+              {% endfor %}
+        {% endif %}
+      
+      
 
       {{ form.email.label_tag }}
-      {{ form.email }}
+      <label class="input validator">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </g>
+        </svg>
+        {{ form.email }}
+      </label>
+       {% if form.email.errors %}
+            {% for error in form.email.errors %}
+            <div class="validator-hint hidden">
+                    {{ error }}
+            </div>
+            {% endfor %}
+      {% endif %}
+      
 
       {{ form.password1.label_tag }}
-      {{ form.password1 }}
+      <label class="input validator">
+          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+              ></path>
+              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            </g>
+          </svg>
+        {{ form.password1 }}
+      </label>
+      {% if form.password1.errors %}
+            {% for error in form.password1.errors %}
+            <div class="validator-hint hidden">
+                    {{ error }}
+            </div>
+            {% endfor %}
+      {% endif %}
+      
 
       {{ form.password2.label_tag }}
-      {{ form.password2 }}
 
+      <label class="input validator">
+          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+              ></path>
+              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            </g>
+          </svg>
+        {{ form.password2 }}
+      </label>
+       {% if form.password2.errors %}
+            {% for error in form.password2.errors %}
+            <div class="validator-hint hidden">
+                    {{ error }}
+            </div>
+            {% endfor %}
+      {% endif %}
+      
       <button type="submit" class="btn btn-primary w-full mt-4">
         S'inscrire
       </button>
