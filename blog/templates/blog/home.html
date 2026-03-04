@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 
-
-
-
-
 {% block content %}
-<!-- Couverture -->
+
+<!-- HERO PRINCIPAL -->
 <div class="hero min-h-[70vh] relative">
 
     <img 
@@ -16,85 +13,104 @@
 
     <div class="hero-overlay bg-black/60"></div>
 
-    <div class="hero-content text-center text-neutral-content relative">
+    <div class="hero-content text-center text-neutral-content relative px-4">
         <div class="max-w-xl">
-            <div class="mb-8">
-                {% if user.is_authenticated %}
-                <span class="mr-4 font-bold text-4xl">
-                    BIENVENUE 
-                    <strong class="text-secondary p-2">
-                        {{ user.username.upper }}
-                    </strong>
+
+            {% if user.is_authenticated %}
+            <p class="mb-6 text-2xl md:text-3xl font-bold">
+                BIENVENUE 
+                <span class="text-secondary">
+                    {{ user.username|upper }}
                 </span>
+            </p>
             {% endif %}
-            </div>
-            
-            <h1 class="text-4xl md:text-6xl font-bold">
+
+            <h1 class="text-3xl md:text-5xl font-bold mb-6">
                 💻 Inspirez-vous, codez, innovez !
             </h1>
-            <p class="mb-5 text-lg md:text-xl">
-                Un espace dédié aux passionnés du numérique, 
+
+            <p class="text-base md:text-lg mb-6">
+                Un espace dédié aux passionnés du numérique,
                 où chaque ligne de code construit l’avenir.
             </p>
-            <a href="{% url 'blog:home' %}" class="btn btn-primary btn-lg">
+
+            <a href="{% url 'blog:home' %}" class="btn btn-primary">
                 Découvrir les articles
             </a>
+
         </div>
     </div>
-
 </div>
 
 
+<!-- LISTE DES ARTICLES -->
+<div class="container mx-auto px-4 py-16 flex flex-col gap-16">
 
-<div class=" container mx-auto px-4 py-0">
 {% for article in articles %}
-<!--Nouveau design-->
-<div class="hero min-h-screen bg-base-200 flex flex-col">
-  <div class="hero-content flex-col lg:flex-row">
-<!--     {% if article.image %} -->
-    <figure class="mb-10 lg:mb-0">
-       <!--  <img src="{{ article.image.url }}" class="max-w-sm rounded-lg shadow-2xl" />
-        {% else %}
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s" class="max-w-sm rounded-lg shadow-2xl" /> -->
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s" alt="">
-    </figure>
-  <!--   {% endif %}  -->
-    <div class="w-full">
-        <h1 class="text-5xl font-bold mr-10 text-green-500">{{ article.titre }}</h1>
-        <h2 class="py-6 m-10 font-bold">{{ article.resume_desc }}</h2>
-        <div class="flex justify-center badge badge-soft badge-info mb-4">
-            <div class="inline-grid *:[grid-area:1/1]">
-                <div class="status status-error animate-ping"></div>
-                <div class="status status-error"></div>
-            </div> 
-            <p class="">
-            Créé le {{ article.date_creation|date:"d/m/Y" }}
-            {% if article.is_updated %} | Mis à jour le {{ article.date_modif|date:"d/m/Y" }} 
-            {% endif %} | Par {{ article.auteur }}
-        </p>
-        </div>
-        <div class="flex justify-center">
-            <a href="{{ article.get_absolute_url }}" class="btn btn-primary m-5">Voir</a>
 
-            {% if user.is_authenticated and user.is_staff %}
-                <a href="{% url 'blog:edit' article.id %}" class="btn btn-primary m-5">✏️ Modifier</a>
+<div class="bg-base-200 rounded-2xl shadow-lg p-6">
+
+    <div class="flex flex-col lg:flex-row items-center gap-8">
+
+        <!-- IMAGE -->
+        <div class="w-full lg:w-1/3">
+            {% if article.image %}
+                <img src="{{ article.image.url }}" 
+                     class="w-full rounded-xl shadow-md object-cover"
+                     alt="{{ article.titre }}">
+            {% else %}
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s"
+                     class="w-full rounded-xl shadow-md object-cover"
+                     alt="{{ article.titre }}">
             {% endif %}
         </div>
-        <!--Commentaire-->
+
+        <!-- CONTENU -->
+        <div class="w-full lg:w-2/3 text-center lg:text-left">
+
+            <h2 class="text-2xl md:text-3xl font-bold text-green-500 mb-4">
+                {{ article.titre }}
+            </h2>
+
+            <p class="mb-6 font-medium">
+                {{ article.resume_desc }}
+            </p>
+
+            <div class="mb-6 text-sm opacity-80">
+                Créé le {{ article.date_creation|date:"d/m/Y" }}
+                {% if article.is_updated %}
+                    | Mis à jour le {{ article.date_modif|date:"d/m/Y" }}
+                {% endif %}
+                | Par {{ article.auteur }}
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+
+                <a href="{{ article.get_absolute_url }}" class="btn btn-primary">
+                    Voir
+                </a>
+
+                {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'blog:edit' article.id %}" class="btn btn-outline btn-primary">
+                    ✏️ Modifier
+                </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
     </div>
-  </div>
 </div>
+
 {% empty %}
-<div class="alert alert-info shadow-lg h-60 flex items-center justify-center text-center font-bold text-lg">
-   <div>
-      <span>Aucun article trouvé. Revenez plus tard !</span>
-   </div>
+
+<div class="alert alert-info shadow-lg text-center font-bold text-lg">
+    Aucun article trouvé. Revenez plus tard !
+</div>
+
 {% endfor %}
 
 </div>
 
-
-
-
 {% endblock %}
-

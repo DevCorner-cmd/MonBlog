@@ -1,147 +1,137 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="min-h-screen flex justify-center py-10 bg-base-200">
 
-  <div class="card w-full max-w-3xl bg-base-100 shadow-xl">
+<div class="min-h-screen bg-base-200 py-10 px-4">
 
-    <!-- Image -->
-    <figure class="relative">
-      <img 
-        src="{% if article.image %}{{ article.image.url }}{% else %}https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s{% endif %}" 
-        alt="{{ article.titre }}" 
-        class="w-full h-auto max-h-96 object-contain rounded-t-xl"
-      >
-    </figure>
+  <div class="max-w-3xl mx-auto">
 
-    <!-- Contenu -->
-    <div class="card-body">
-      <h1 class="card-title text-3xl md:text-4xl font-bold mb-4">
-        {{ article.titre }}
-      </h1>
+    <!-- CARD ARTICLE -->
+    <div class="card bg-base-100 shadow-xl">
 
-      <p class="text-base  md:text-lg text-base-content mb-6 leading-relaxed h-auto overflow-hidden bg-blue-100 p-4 rounded-lg shadow-sm flex-1">
-        {{ article.description }}
-      </p>
+      <!-- Image -->
+      <figure>
+        <img 
+          src="{% if article.image %}{{ article.image.url }}{% else %}https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s{% endif %}" 
+          alt="{{ article.titre }}" 
+          class="w-full max-h-96 object-cover rounded-t-xl"
+        >
+      </figure>
 
-      <!-- Bouton retour -->
-      <div class="flex justify-start">
-        <a href="{% url 'blog:home' %}" class="btn btn-outline btn-primary">
-          ← Retour à l'accueil
-        </a>
-      </div>
-      <div class="flex justify-end w-full">
-        <p class="text-sm text-gray-500">
-          Publié le {{ article.date_creation|date:"d/m/Y" }}
+      <!-- Contenu -->
+      <div class="card-body">
+
+        <h1 class="text-2xl md:text-4xl font-bold mb-4">
+          {{ article.titre }}
+        </h1>
+
+        <p class="text-base md:text-lg leading-relaxed bg-blue-50 p-4 rounded-lg shadow-sm">
+          {{ article.description }}
         </p>
+
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-3">
+
+          <a href="{% url 'blog:home' %}" class="btn btn-outline btn-primary">
+            ← Retour
+          </a>
+
+          <p class="text-sm text-gray-500">
+            Publié le {{ article.date_creation|date:"d/m/Y" }}
+          </p>
+
+        </div>
+
       </div>
     </div>
 
   </div>
+</div>
+
+
+<!-- ================= COMMENTAIRES ================= -->
+
+<div class="max-w-2xl mx-auto px-4 pb-16">
+
+  <h3 class="text-xl md:text-2xl font-bold text-center mb-8">
+    💬 Commentaires
+  </h3>
+
+  {% for comment in article.commentaires.all %}
+  {% if not comment.parent %}
+
+  <!-- COMMENTAIRE PRINCIPAL -->
+  <div class="chat chat-start mb-6">
+
+    <div class="chat-image avatar">
+      <div class="w-10 rounded-full">
+        <img src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp" alt="avatar" />
+      </div>
+    </div>
+
+    <div>
+      <div class="chat-header text-sm">
+        {{ comment.auteur.username }}
+        <time class="text-xs opacity-50">
+          {{ comment.date_creation|date:"d/m/Y H:i" }}
+        </time>
+      </div>
+
+      <div class="chat-bubble break-words">
+        {{ comment.contenu }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Réponses -->
+  {% for reply in comment.reponses.all %}
+  <div class="chat chat-end mb-4">
+
+    <div>
+      <div class="chat-header text-sm text-right">
+        {{ reply.auteur.username }}{% if reply.auteur.is_superuser %} (Admin){% endif %}
+        <time class="text-xs opacity-50">
+          {{ reply.date_creation|date:"d/m/Y H:i" }}
+        </time>
+      </div>
+
+      <div class="chat-bubble chat-bubble-primary break-words">
+        {{ reply.contenu }}
+      </div>
+    </div>
+
+  </div>
+  {% endfor %}
+
+  <hr class="my-6">
+
+  {% endif %}
+  {% empty %}
+  <p class="text-center text-gray-500">
+    Aucun commentaire pour l’instant.
+  </p>
+  {% endfor %}
+
+
+  <!-- FORMULAIRE COMMENTAIRE -->
+  {% if user.is_authenticated and not user.is_superuser %}
+  <form method="POST" class="mt-6 space-y-3">
+    {% csrf_token %}
+    <textarea name="contenu"
+              class="textarea textarea-bordered w-full"
+              placeholder="Écrire un commentaire..."
+              required></textarea>
+
+    <button type="submit" class="btn btn-primary">
+      Envoyer
+    </button>
+  </form>
+
+  {% elif not user.is_authenticated %}
+  <p class="text-center text-gray-500 mt-6">
+    Connectez-vous pour commenter.
+  </p>
+  {% endif %}
 
 </div>
-<!-- SECTION COMMENTAIRES -->
-<div class="mt-10 w-full max-w-2xl mb-10 items-center mx-auto gap-6">
 
-    <h3 class="text-2xl font-bold mb-4 text-center">
-        💬 COMMENTAIRES
-    </h3>
-
-    {% for comment in article.commentaires.all %}
-        {% if not comment.parent %}
-        <!-- Commentaire principal -->
-        <div class="chat chat-start mb-4">
-            <div class="chat-image avatar">
-                <div class="w-10 rounded-full">
-                    <img src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp" alt="avatar" />
-                </div>
-            </div>
-            <div class="chat-header">
-                {{ comment.auteur.username }}
-                <time class="text-xs opacity-50">{{ comment.date_creation|date:"d/m/Y H:i" }}</time>
-            </div>
-            <div class="chat-bubble">{{ comment.contenu }}</div>
-            <div class="chat-footer opacity-50">Envoyé</div>
-        </div>
-
-        <!-- Bouton et formulaire réponse -->
-        {% if user.is_authenticated %}
-        <div class="mt-2">
-            <button class="btn btn-xs btn-outline"
-                    onclick="document.getElementById('reply-{{ comment.id }}').classList.toggle('hidden')">
-                Répondre
-            </button>
-
-            <form id="reply-{{ comment.id }}" method="POST" class="hidden mt-3">
-                {% csrf_token %}
-                <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                <textarea name="contenu"
-                          class="textarea textarea-bordered w-full"
-                          placeholder="Répondre..."
-                          required></textarea>
-                <button type="submit" class="btn btn-primary btn-sm mt-2">Envoyer</button>
-            </form>
-        </div>
-        {% endif %}
-
-        <!-- Réponses -->
-        {% for reply in comment.reponses.all %}
-        <div class="chat chat-end mb-4">
-            <div class="chat-image avatar">
-                <div class="w-10 rounded-full">
-                    <img src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp" alt="avatar" />
-                </div>
-            </div>
-            <div class="chat-header">
-                {{ reply.auteur.username }}{% if reply.auteur.is_superuser %} (Admin){% endif %}
-                <time class="text-xs opacity-50">{{ reply.date_creation|date:"d/m/Y H:i" }}</time>
-            </div>
-            <div class="chat-bubble chat-bubble-primary">{{ reply.contenu }}</div>
-            <div class="chat-footer opacity-50">Vu le {{ reply.date_creation|date:"d/m/Y H:i" }}</div>
-        </div>
-
-        <!-- Bouton et formulaire réponse pour chaque réponse -->
-        {% if user.is_authenticated %}
-        <div class="mt-2">
-            <button class="btn btn-xs btn-outline"
-                    onclick="document.getElementById('reply-{{ reply.id }}').classList.toggle('hidden')">
-                Répondre
-            </button>
-
-            <form id="reply-{{ reply.id }}" method="POST" class="hidden mt-3">
-                {% csrf_token %}
-                <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                <textarea name="contenu"
-                          class="textarea textarea-bordered w-full"
-                          placeholder="Répondre..."
-                          required></textarea>
-                <button type="submit" class="btn btn-primary btn-sm mt-2">Envoyer</button>
-            </form>
-        </div>
-        {% endif %}
-        {% endfor %}
-
-        <hr class="my-6">
-        {% endif %}
-    {% empty %}
-        <p class="text-center text-gray-500">Aucun commentaire pour l’instant.</p>
-    {% endfor %}
-
-    <!-- Formulaire commentaire utilisateur -->
-    {% if user.is_authenticated and not user.is_superuser %}
-    <form method="POST" class="mt-6">
-        {% csrf_token %}
-        <textarea name="contenu"
-                  class="textarea textarea-bordered w-full"
-                  placeholder="Écrire un commentaire..."
-                  required></textarea>
-        <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
-    </form>
-    {% elif not user.is_authenticated %}
-    <p class="text-center text-gray-500 mt-4">
-        Connectez-vous pour commenter.
-    </p>
-    {% endif %}
-
-</div>
 {% endblock %}
