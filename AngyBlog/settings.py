@@ -4,6 +4,14 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
+CLOUDINARY_URL = config('CLOUDINARY_URL')
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -15,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['angyblog.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -30,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #My app
-    'blog'
+    'blog',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +138,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = 'blog:home'
 LOGOUT_REDIRECT_URL = 'blog:home'
 
+DEFAUT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
