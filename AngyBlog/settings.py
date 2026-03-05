@@ -105,8 +105,8 @@ WSGI_APPLICATION = 'AngyBlog.wsgi.application'
 # =========================
 # DATABASE
 # =========================
-if DEBUG:
-"""     DATABASES = {
+""" if DEBUG:
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
