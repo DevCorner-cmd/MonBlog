@@ -3,82 +3,75 @@
 {% block title %}Modifier Article{% endblock %}
 
 {% block content %}
+<div class="min-h-screen bg-base-200 py-12 px-4 flex justify-center">
+  <div class="w-full max-w-3xl">
 
-<div class="min-h-screen flex items-center justify-center bg-base-200 py-10">
+    <div class="card bg-base-100 shadow-xl border border-base-300">
 
-  <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
-
-    <div class="card-body">
-      
-      <h1 class="card-title text-3xl font-bold justify-center mb-6">
-        ✏️ Modifier l'article
-      </h1>
-
-      <form method="POST" enctype="multipart/form-data" class="space-y-5">
-        {% csrf_token %}
+      <div class="card-body">
 
         <!-- Titre -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text font-semibold">Titre</span>
-          </label>
-          {{ form.titre }}
-        </div>
+        <h1 class="text-3xl font-bold text-center text-primary mb-6">
+          ✏️ Modifier l'article
+        </h1>
 
-        <!-- Résumé -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text font-semibold">Résumé</span>
-          </label>
-          {{ form.resume_desc }}
-        </div>
+        <div class="divider">Contenu</div>
 
-        <!-- Description -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text font-semibold">Description</span>
-          </label>
-          {{ form.description }}
-        </div>
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
 
-        <!-- Image -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text font-semibold">Image</span>
-          </label>
+          <!-- Champs réutilisables -->
+          {% for field in form %}
+            {% if field.name != 'publie' %}
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold text-{{ field.css_class|default:'base-content' }}">
+                  {{ field.label }}
+                </span>
+              </label>
+              <div class="bg-base-200 p-2 rounded-lg">
+                {{ field }}
+                {% if field.help_text %}
+                <p class="text-sm text-gray-500 mt-1">{{ field.help_text }}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                <p class="text-sm text-error mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
 
+          <!-- Image existante -->
           {% if article.image %}
-          <figure class="mb-2">
-            <img src="{{ article.image.url }}" alt="{{ article.titre }}" class="w-full h-48 object-contain rounded-lg" />
-          </figure>
+          <div class="mb-4">
+            <img src="{{ article.image.url }}" alt="{{ article.titre }}" class="rounded-xl shadow-md w-full max-h-64 object-cover">
+          </div>
           {% endif %}
 
-          {{ form.image }}
-        </div>
+          <!-- Case Publie -->
+          <div class="alert bg-base-200">
+            <div class="flex justify-between items-center w-full">
+              <span class="font-semibold">Publier cet article</span>
+              {{ form.publie }}
+            </div>
+          </div>
 
-        <!-- Publier -->
-        <div class="form-control">
-          <label class="label cursor-pointer justify-start gap-4">
-            <span class="label-text font-semibold">Publié</span>
-            {{ form.publie }}
-          </label>
-        </div>
+          <div class="divider"></div>
 
-        <!-- Boutons -->
-        <div class="flex flex-col md:flex-row gap-4 mt-6">
-          <button type="submit" class="btn btn-primary flex-1">
-            💾 Enregistrer
-          </button>
-          <a href="{% url 'blog:dashboard' %}" class="btn btn-outline flex-1">
-            🏠 Retour au dashboard
-          </a>
-        </div>
+          <!-- Boutons -->
+          <div class="flex flex-col md:flex-row gap-4">
+            <button type="submit" class="btn btn-primary flex-1">
+              💾 Enregistrer les modifications
+            </button>
+            <a href="{% url 'blog:dashboard' %}" class="btn btn-outline flex-1">
+              ← Retour au dashboard
+            </a>
+          </div>
 
-      </form>
-
+        </form>
+      </div>
     </div>
   </div>
-
 </div>
-
 {% endblock %}

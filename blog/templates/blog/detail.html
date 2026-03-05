@@ -6,131 +6,175 @@
 
   <div class="max-w-3xl mx-auto">
 
-    <!-- CARD ARTICLE -->
-    <div class="card bg-base-100 shadow-xl">
+```
+<!-- CARD ARTICLE -->
+<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition">
 
-      <!-- Image -->
-      <figure>
-        <img 
-          src="{% if article.image %}{{ article.image.url }}{% else %}https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3TXTxHxOkvA3GQiZfsObHbecQPPzsxl0GWw&s{% endif %}" 
-          alt="{{ article.titre }}" 
-          class="w-full max-h-96 object-cover rounded-t-xl"
-        >
-      </figure>
+  <!-- Image -->
+  <figure>
+    {% if article.image %}
+    <img src="{{ article.image.url }}"
+         alt="{{ article.titre }}"
+         class="w-full h-72 object-cover rounded-t-xl">
+    {% else %}
+    <img src="https://via.placeholder.com/800x400?text=Pas+d'image"
+         alt="Aucune image disponible"
+         class="w-full h-72 object-cover rounded-t-xl">
+    {% endif %}
+  </figure>
 
-      <!-- Contenu -->
-      <div class="card-body">
+  <!-- Contenu -->
+  <div class="card-body">
 
-        <h1 class="text-2xl md:text-4xl font-bold mb-4">
-          {{ article.titre }}
-        </h1>
+    <h1 class="text-3xl md:text-4xl font-bold mb-4">
+      {{ article.titre }}
+    </h1>
 
-        <p class="text-base md:text-lg leading-relaxed bg-blue-50 p-4 rounded-lg shadow-sm">
-          {{ article.description }}
-        </p>
+    <p class="text-base md:text-lg leading-relaxed bg-blue-50 p-5 rounded-lg shadow-sm">
+      {{ article.description|safe }}
+    </p>
 
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-3">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-3">
 
-          <a href="{% url 'blog:home' %}" class="btn btn-outline btn-primary">
-            ← Retour
-          </a>
+      <a href="{% url 'blog:home' %}" class="btn btn-outline btn-primary btn-sm">
+        ← Retour
+      </a>
 
-          <p class="text-sm text-gray-500">
-            Publié le {{ article.date_creation|date:"d/m/Y" }}
-          </p>
+      <p class="text-sm text-gray-500">
+        Publié le {{ article.date_creation|date:"d/m/Y" }}
+      </p>
 
-        </div>
-
-      </div>
     </div>
 
   </div>
 </div>
+```
 
+  </div>
+</div>
 
 <!-- ================= COMMENTAIRES ================= -->
 
 <div class="max-w-2xl mx-auto px-4 pb-16">
 
-  <h3 class="text-xl md:text-2xl font-bold text-center mb-8">
-    💬 Commentaires
+  <h3 class="text-2xl font-bold text-center mb-10">
+    💬 Discussion
   </h3>
 
-  {% for comment in article.commentaires.all %}
-  {% if not comment.parent %}
+{% for comment in article.commentaires.all %}
+{% if not comment.parent %}
 
-  <!-- COMMENTAIRE PRINCIPAL -->
-  <div class="chat chat-start mb-6">
+  <!-- COMMENTAIRE -->
 
-    <div class="chat-image avatar">
-      <div class="w-10 rounded-full">
-        <img src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp" alt="avatar" />
-      </div>
-    </div>
+  <div class="flex gap-3 mb-6">
 
-    <div>
-      <div class="chat-header text-sm">
+```
+<!-- Avatar -->
+<div class="avatar">
+  <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+    <img src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp"/>
+  </div>
+</div>
+
+<!-- Contenu -->
+<div class="flex-1">
+
+  <div class="bg-base-100 shadow-md rounded-xl p-4">
+
+    <div class="flex justify-between items-center mb-2">
+      <p class="font-semibold text-sm">
         {{ comment.auteur.username }}
-        <time class="text-xs opacity-50">
-          {{ comment.date_creation|date:"d/m/Y H:i" }}
-        </time>
-      </div>
+      </p>
 
-      <div class="chat-bubble break-words">
-        {{ comment.contenu }}
-      </div>
+      <span class="text-xs text-gray-400">
+        {{ comment.date_creation|date:"d/m/Y H:i" }}
+      </span>
     </div>
+
+    <p class="text-sm leading-relaxed">
+      {{ comment.contenu }}
+    </p>
+
   </div>
 
   <!-- Réponses -->
   {% for reply in comment.reponses.all %}
-  <div class="chat chat-end mb-4">
+  <div class="flex gap-3 mt-4 ml-10">
 
-    <div>
-      <div class="chat-header text-sm text-right">
-        {{ reply.auteur.username }}{% if reply.auteur.is_superuser %} (Admin){% endif %}
-        <time class="text-xs opacity-50">
+    <div class="avatar">
+      <div class="w-8 rounded-full">
+        <img src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp"/>
+      </div>
+    </div>
+
+    <div class="bg-primary text-primary-content rounded-xl p-3 shadow">
+
+      <div class="flex justify-between text-xs mb-1">
+        <span>
+          {{ reply.auteur.username }}
+          {% if reply.auteur.is_superuser %}
+          <span class="badge badge-xs badge-secondary ml-1">Admin</span>
+          {% endif %}
+        </span>
+
+        <span class="opacity-70">
           {{ reply.date_creation|date:"d/m/Y H:i" }}
-        </time>
+        </span>
       </div>
 
-      <div class="chat-bubble chat-bubble-primary break-words">
+      <p class="text-sm">
         {{ reply.contenu }}
-      </div>
+      </p>
+
     </div>
 
   </div>
   {% endfor %}
 
-  <hr class="my-6">
+</div>
+```
 
-  {% endif %}
-  {% empty %}
-  <p class="text-center text-gray-500">
-    Aucun commentaire pour l’instant.
-  </p>
-  {% endfor %}
+  </div>
 
+{% endif %}
+{% empty %}
+
+  <div class="text-center py-10">
+    <p class="text-gray-400">Aucun commentaire pour le moment.</p>
+  </div>
+
+{% endfor %}
 
   <!-- FORMULAIRE COMMENTAIRE -->
-  {% if user.is_authenticated and not user.is_superuser %}
-  <form method="POST" class="mt-6 space-y-3">
-    {% csrf_token %}
-    <textarea name="contenu"
-              class="textarea textarea-bordered w-full"
-              placeholder="Écrire un commentaire..."
-              required></textarea>
 
-    <button type="submit" class="btn btn-primary">
-      Envoyer
-    </button>
+{% if user.is_authenticated and not user.is_superuser %}
+
+  <form method="POST" class="mt-8 bg-base-100 p-5 rounded-xl shadow space-y-4">
+
+```
+{% csrf_token %}
+
+<textarea name="contenu"
+          class="textarea textarea-bordered w-full focus:textarea-primary"
+          placeholder="Partage ton avis..."
+          required></textarea>
+
+<div class="flex justify-end">
+  <button type="submit" class="btn btn-primary btn-sm">
+    Publier
+  </button>
+</div>
+```
+
   </form>
 
-  {% elif not user.is_authenticated %}
+{% elif not user.is_authenticated %}
+
   <p class="text-center text-gray-500 mt-6">
     Connectez-vous pour commenter.
   </p>
-  {% endif %}
+
+{% endif %}
 
 </div>
 

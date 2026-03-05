@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
+from ckeditor.fields import RichTextField
 
 """
 Article
@@ -22,10 +24,10 @@ class Article(models.Model):
     slug = models.SlugField(unique=True)
 
     views = models.PositiveIntegerField(default=0)
-    description = models.TextField()
-    resume_desc = models.TextField(blank=True)
+    description = RichTextField()
+    resume_desc = RichTextField(blank=True)
 
-    image = models.ImageField(upload_to='articles', blank=True, null=True)
+    image = models.ImageField(upload_to="images", blank=True, null=True)
     auteur = models.ForeignKey(User, on_delete=models.CASCADE)
 
     publie = models.BooleanField(default=True)

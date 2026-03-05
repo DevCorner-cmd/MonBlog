@@ -21,7 +21,14 @@ ALLOWED_HOSTS = ['angyblog.onrender.com', 'localhost', '127.0.0.1']
 # =========================
 # Assure-toi que CLOUDINARY_URL est bien défini dans tes variables d'environnement
 # Exemple : cloudinary://API_KEY:API_SECRET@CLOUD_NAME
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 # =========================
 # APPLICATIONS
@@ -34,6 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
+    'whitenoise.runserver_nostatic',  # pour servir les fichiers statiques en prod
+    'django_cleanup.apps.CleanupConfig',  # pour supprimer les fichiers médias associés aux objets supprimés
+    'widget_tweaks',
     
     # Mes apps
     'blog',
@@ -42,6 +53,18 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
 ]
+
+
+# ===========================
+#  CKEDITOR CONFIG PAR DEFAUT
+# ===========================
+
+CKEDITOR_CONFIGS ={
+    'default':{
+        'toolbar': 'full',
+        'height': 300,
+    },
+}
 
 # =========================
 # MIDDLEWARE
@@ -82,12 +105,17 @@ WSGI_APPLICATION = 'AngyBlog.wsgi.application'
 # =========================
 # DATABASE
 # =========================
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
-        conn_max_age=600
-    )
-}
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.parse(config('DATABASE_URL'))
+    }
 
 # =========================
 # PASSWORD VALIDATION
@@ -130,8 +158,19 @@ LOGOUT_REDIRECT_URL = 'blog:home'
 # =========================
 # AUTRES OPTIONS CLOUDINARY (optionnel)
 # =========================
+# =========================
+# CLOUDINARY
+# =========================
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": config("CLOUD_NAME"),
+    "API_KEY": config("API_KEY"),
+    "API_SECRET": config("API_SECRET"),
+}
+
 cloudinary.config(
-    cloud_name=config('CLOUDINARY_CLOUD_NAME', default=''),
-    api_key=config('CLOUDINARY_API_KEY', default=''),
-    api_secret=config('CLOUDINARY_API_SECRET', default=''),
+    secure=True
 )
+
+
+print("CLOUDINARY_URL =", config("CLOUDINARY_URL", default="NOT FOUND"))
